@@ -1,0 +1,39 @@
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools" android:id="@+id/golfcourse_detail_container"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    tools:context=".TweetListActivity" >
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_gravity="center_horizontal|top"
+        android:weightSum="1">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceLarge"
+            android:text="Large Text"
+            android:id="@+id/textView"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.31"
+            android:layout_marginLeft="@dimen/tw__tweet_text_margin_left"
+            android:layout_marginRight="@dimen/tw__tweet_text_margin_right"
+            style="@style/tw__TweetText"
+            android:autoLink="web|map"
+            android:background="@android:color/white"
+            android:fontFamily="@string/tw__tweet_content_description"
+            android:gravity="start|clip_vertical"
+            android:letterSpacing="0.06"
+            android:linksClickable="true" />
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/scrollView"
+            android:layout_gravity="center_horizontal"
+            android:layout_weight="0.77" />
+
+    </LinearLayout>
+</FrameLayout>
