@@ -26,30 +26,32 @@ public class MainActivity extends AppCompatActivity {
     private TwitterLoginButton loginButton = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        TwitterAuthToken authToken;
         super.onCreate(savedInstanceState);
         TwitterAuthConfig authConfig = new TwitterAuthConfig(TWITTER_KEY, TWITTER_SECRET);
         Fabric.with(this, new Twitter(authConfig));
         setContentView(R.layout.activity_main);
 
-        loginButton = (TwitterLoginButton) findViewById(R.id.login_button);
-        loginButton.setCallback(new Callback<TwitterSession>() {
+        TwitterSession session = getActiveSession();
+        if (session == null || session.getAuthToken().isExpired()){
+            loginButton = (TwitterLoginButton) findViewById(R.id.login_button);
+            loginButton.setCallback(new Callback<TwitterSession>() {
 
-            @Override
-            public void success(Result<TwitterSession> result) {
-                TwitterSession session = Twitter.getSessionManager().getActiveSession();
-                TwitterAuthToken authToken = session.getAuthToken();
-                Intent searchActivity = new Intent(MainActivity.this, SearchActivity.class);
-                searchActivity.putExtra("token", authToken.token);
-                searchActivity.putExtra("secret", authToken.secret);
-                startActivity(searchActivity);
-            }
+                @Override
+                public void success(Result<TwitterSession> result) {
+                    TwitterSession session = getActiveSession();
+                    TwitterAuthToken authToken = session.getAuthToken();
+                    startSearchActivity(authToken.token, authToken.secret);
+                }
 
-            @Override
-            public void failure(TwitterException e) {
-                Log.e(TAG, "Failed:" + e.getMessage());
-            }
-        });
-
+                @Override
+                public void failure(TwitterException e) {
+                    Log.e(TAG, "Failed:" + e.getMessage());
+                }
+            });
+        }else {
+            startSearchActivity(session.getAuthToken().token, session.getAuthToken().secret);
+        }
     }
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -58,5 +60,15 @@ public class MainActivity extends AppCompatActivity {
         loginButton.onActivityResult(requestCode, resultCode, data);
     }
 
+    private TwitterSession getActiveSession(){
+        return Twitter.getSessionManager().getActiveSession();
+    }
+
+    private void startSearchActivity(String authToken, String secret){
+        Intent searchActivity = new Intent(MainActivity.this, SearchActivity.class);
+        searchActivity.putExtra("token", authToken);
+        searchActivity.putExtra("secret", secret);
+        startActivity(searchActivity);
+    }
 
 }
